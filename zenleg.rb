@@ -24,7 +24,7 @@ class Zenleg
 				g.group 3
 			end
 		end
-		response = RestClient.post "http://applesonthetree.zendesk.com/users.xml" xml
+		response = RestClient.post "http://applesonthetree.zendesk.com/users.xml", xml
 		if response.code == 507
 			return "Account cannot create more users"
 		end
@@ -38,11 +38,11 @@ class Zenleg
 		builder.instruct!
 		builder.ticket do |t|
 			t.description "this is my requester ticket"
-			t.tag! "priority-id" 1
-			t.tag! "requester-name" "Request User"
-			t.tag! "requester-email" "requester@applesonthetree.com"
+			t.tag! "priority-id", 1
+			t.tag! "requester-name", "Request User"
+			t.tag! "requester-email", "requester@applesonthetree.com"
 		end
-		response = RestClient.post "http://applesonthetree.zendesk.com/tickets.xml" xml
+		response = RestClient.post "http://applesonthetree.zendesk.com/tickets.xml", xml
 	end
 
 	def mark_ticket_resolved
@@ -51,11 +51,11 @@ class Zenleg
 		builder = Builder::XmlMarkup.new(:target => xml)
 		builder.instruct!
 		builder.ticket do |t|
-			t.tag! "assignee-id" 1
-			t.tag! "additional-tags" "tagname"
-			t.tag(:type => "array")! "ticket-field-entries" do |entry|
+			t.tag! "assignee-id", 1
+			t.tag! "additional-tags", "tagname"
+			t.tag! "ticket-field-entries", :type => "array" do |entry|
 				entry.tag! "ticket-field-entry" do |field|
-					field.tag! "ticket-field-id" 1
+					field.tag! "ticket-field-id", 1
 					field.value "value"
 				end
 			end
