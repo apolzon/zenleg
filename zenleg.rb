@@ -1,19 +1,22 @@
 require 'rubygems'
 require 'rest-client'
 require 'builder'
+require 'ostruct'
 class Zenleg
 	RestClient.log = $stdout
 	@@resource = RestClient::Resource.new("http://applesonthetree.zendesk.com", :user => "apolzon@gmail.com", :password => "test123")
 	def initialize(*args)
 		defaults = {
-			:email => "requester@applesonthetree.com",
-			:name => "Request User",
+			:email => "requester1@applesonthetree.com",
+			:name => "Request User1",
 			:roles => 0,
-			:restriction_id => 4,
-			:groups => [2,3]
+			:restriction_id => 4
 		}
 		params = defaults
 		params = defaults.merge(args.first) unless args.empty?
+		@user = OpenStruct.new
+		@user.email = params[:email]
+		@user.name = params[:name]
 		xml = ""
 		builder = Builder::XmlMarkup.new(:target => xml)
 		builder.instruct!
@@ -25,12 +28,11 @@ class Zenleg
 			u.tag! "restriction-id", params[:restriction_id]
 			u.tag! "is-verified", "true"
 		end
-		#response = @@resource["/users.xml"].post xml, :content_type => "xml"
-#		response = @resource["/users.xml"].post "<user><email>t@t.com</email><name>Test Test</name></user>", :content_type => "xml"
-		#if response.code == 507
-		#	return "Account cannot create more users"
-		#end
-		#response
+		response = @@resource["/users.xml"].post xml, :content_type => "xml"
+		if response.code == 507
+			return "Account cannot create more users"
+		end
+		response
 	end
 
 	def create_ticket_as_requester(*args)
@@ -47,8 +49,8 @@ class Zenleg
 		builder.ticket do |t|
 			t.description params[:description]
 			t.tag! "priority-id", params[:priority_id]
-			t.tag! "requester-name", "Request User" # look this up in our created user
-			t.tag! "requester-email", "requester@applesonthetree.com" # look this up in our created user
+			t.tag! "requester-name", @user.name
+			t.tag! "requester-email", @user.email 
 		end
 		response = @@resource["/tickets.xml"].post xml, :content_type => "xml"
 	end
