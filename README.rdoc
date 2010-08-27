@@ -1,0 +1,4 @@
+= Purpose
+This class provides three useful methods -- an initializer, for creating a new user, a method for creating a ticket as that user, and another for marking the ticket as resolved.
+
+If you do not provide parameters, defaults will be used.  However, the class does not pre-verify it is not creating an already existing user; a 406 (Not Acceptable) error is a good sign this is what is going on.
