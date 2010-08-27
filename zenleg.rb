@@ -2,7 +2,8 @@ require 'rubygems'
 require 'rest-client'
 require 'builder'
 class Zenleg
-	@@api_url = "http://applesonthetree.zendesk.com"
+	RestClient.log = $stdout
+	@@resource = RestClient::Resource.new("http://applesonthetree.zendesk.com", :user => "apolzon@gmail.com", :password => "test123")
 	# RestClient usage:
 	# RestClient.get 'url'
 	# RestClient.get 'url', {:params => {} }
@@ -19,8 +20,6 @@ class Zenleg
 		}
 		params = defaults
 		params = defaults.merge(args.first) unless args.empty?
-		# Create the user
-		# POST /users.xml
 		url = "/users.xml"
 		xml = ""
 		builder = Builder::XmlMarkup.new(:target => xml)
@@ -36,7 +35,7 @@ class Zenleg
 				end
 			end
 		end
-		response = RestClient.post "#{@@api_url}#{url}", xml
+		response = @@resource[url].post xml, :content_type => "application/xml"
 		if response.code == 507
 			return "Account cannot create more users"
 		end
@@ -61,7 +60,7 @@ class Zenleg
 			t.tag! "requester-name", "Request User" # look this up in our created user
 			t.tag! "requester-email", "requester@applesonthetree.com" # look this up in our created user
 		end
-		response = RestClient.post "#{@@api_url}#{url}", xml
+		response = @@resource.post "#{url}", xml
 	end
 
 	def mark_ticket_resolved(*args)
@@ -89,6 +88,6 @@ class Zenleg
 				end
 			end
 		end
-		response = RestClient.put "#{@@api_url}#{url}", xml
+		response = @@resource.put "#{url}", xml
 	end
 end
