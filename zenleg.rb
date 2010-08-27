@@ -42,6 +42,7 @@ class Zenleg
 			t.tag! "requester-name" "Request User"
 			t.tag! "requester-email" "requester@applesonthetree.com"
 		end
+		response = RestClient.post "http://applesonthetree.zendesk.com/tickets.xml" xml
 	end
 
 	def mark_ticket_resolved
@@ -59,5 +60,6 @@ class Zenleg
 				end
 			end
 		end
+		response = RestClient.put "http://applesonthetree.zendesk.com/tickets/1.xml"
 	end
 end
