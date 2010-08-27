@@ -10,10 +10,7 @@ class Zenleg
 	
 	def initialize
 		# Create the user
-		# Success returns xml with userid
-		# No privs gives 507 (catch this?)
 		# POST /users.xml
-		# Sample xml:
 		xml = ""
 		builder = Builder::XmlMarkup.new(:target => xml)
 		builder.instruct!
@@ -21,7 +18,7 @@ class Zenleg
 			u.email "requester@applesonthetree.com"
 			u.name "Request User"
 			u.roles 4
-			u.tag! 'restriction-id' 1
+			u.tag! "restriction-id" 1
 			u.groups(:type => "array") do |g|
 				g.group 2
 				g.group 3
@@ -34,33 +31,33 @@ class Zenleg
 		response
 	end
 
-	def create_ticket_as_requestor
+	def create_ticket_as_requester
 		# POST /tickets.xml
-		# Sample xml:
-=begin
-		<ticket>
-			<description></description>
-			<priority-id></priority-id>
-			<requester-name></requester-name>
-			<requester-email></requester-email>
-		</ticket>
-=end
+		xml = ""
+		builder = Builder::XmlMarkup.new(:target => xml)
+		builder.instruct!
+		builder.ticket do |t|
+			t.description "this is my requester ticket"
+			t.tag! "priority-id" 1
+			t.tag! "requester-name" "Request User"
+			t.tag! "requester-email" "requester@applesonthetree.com"
+		end
 	end
 
 	def mark_ticket_resolved
 		# PUT /tickets/#{id}.xml
-		# Sample xml:
-=begin
-		<ticket>
-			<assignee-id></assignee-id>
-			<additional-tags></additional-tags>
-			<ticket-field-entries type="array">
-				<ticket-field-entry>
-					<ticket-field-id></ticket-field-id>
-					<value></value>
-				</ticket-field-entry>
-			</ticket-field-entries>
-		</ticket>
-=end
+		xml = ""
+		builder = Builder::XmlMarkup.new(:target => xml)
+		builder.instruct!
+		builder.ticket do |t|
+			t.tag! "assignee-id" 1
+			t.tag! "additional-tags" "tagname"
+			t.tag(:type => "array")! "ticket-field-entries" do |entry|
+				entry.tag! "ticket-field-entry" do |field|
+					field.tag! "ticket-field-id" 1
+					field.value "value"
+				end
+			end
+		end
 	end
 end
