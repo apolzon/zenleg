@@ -2,6 +2,7 @@ require 'rubygems'
 require 'rest-client'
 require 'builder'
 class Zenleg
+	@@api_url = "http://applesonthetree.zendesk.com"
 	# RestClient usage:
 	# RestClient.get 'url'
 	# RestClient.get 'url', {:params => {} }
@@ -11,6 +12,7 @@ class Zenleg
 	def initialize
 		# Create the user
 		# POST /users.xml
+		url = "/users.xml"
 		xml = ""
 		builder = Builder::XmlMarkup.new(:target => xml)
 		builder.instruct!
@@ -24,7 +26,7 @@ class Zenleg
 				g.group 3
 			end
 		end
-		response = RestClient.post "http://applesonthetree.zendesk.com/users.xml", xml
+		response = RestClient.post "#{@@api_url}#{url}", xml
 		if response.code == 507
 			return "Account cannot create more users"
 		end
@@ -33,6 +35,7 @@ class Zenleg
 
 	def create_ticket_as_requester
 		# POST /tickets.xml
+		url = "/tickets.xml"
 		xml = ""
 		builder = Builder::XmlMarkup.new(:target => xml)
 		builder.instruct!
@@ -42,11 +45,12 @@ class Zenleg
 			t.tag! "requester-name", "Request User"
 			t.tag! "requester-email", "requester@applesonthetree.com"
 		end
-		response = RestClient.post "http://applesonthetree.zendesk.com/tickets.xml", xml
+		response = RestClient.post "#{@@api_url}#{url}", xml
 	end
 
 	def mark_ticket_resolved
 		# PUT /tickets/#{id}.xml
+		url = "/tickets/1.xml"
 		xml = ""
 		builder = Builder::XmlMarkup.new(:target => xml)
 		builder.instruct!
@@ -60,6 +64,6 @@ class Zenleg
 				end
 			end
 		end
-		response = RestClient.put "http://applesonthetree.zendesk.com/tickets/1.xml"
+		response = RestClient.put "#{@@api_url}#{url}", xml
 	end
 end
