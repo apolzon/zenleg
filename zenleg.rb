@@ -9,7 +9,7 @@ class Zenleg
 	# RestClient.post 'url'
 	# RestClient.delete 'url'
 	
-	def initialize
+	def initialize(email="requester@applesonthetree.com", name="Request User", roles=4, restriction_id=1, groups=[2,3])
 		# Create the user
 		# POST /users.xml
 		url = "/users.xml"
@@ -17,13 +17,14 @@ class Zenleg
 		builder = Builder::XmlMarkup.new(:target => xml)
 		builder.instruct!
 		builder.user do |u|
-			u.email "requester@applesonthetree.com"
-			u.name "Request User"
-			u.roles 4
-			u.tag! "restriction-id" 1
+			u.email email
+			u.name name
+			u.roles roles
+			u.tag! "restriction-id" restriction_id
 			u.groups(:type => "array") do |g|
-				g.group 2
-				g.group 3
+				groups.each do |g_num|
+					g.group g_num
+				end
 			end
 		end
 		response = RestClient.post "#{@@api_url}#{url}", xml
