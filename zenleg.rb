@@ -34,17 +34,17 @@ class Zenleg
 		response
 	end
 
-	def create_ticket_as_requester
+	def create_ticket_as_requester(description="requester description", priority_id=1)
 		# POST /tickets.xml
 		url = "/tickets.xml"
 		xml = ""
 		builder = Builder::XmlMarkup.new(:target => xml)
 		builder.instruct!
 		builder.ticket do |t|
-			t.description "this is my requester ticket"
-			t.tag! "priority-id", 1
-			t.tag! "requester-name", "Request User"
-			t.tag! "requester-email", "requester@applesonthetree.com"
+			t.description description
+			t.tag! "priority-id", priority_id
+			t.tag! "requester-name", "Request User" # look this up in our created user
+			t.tag! "requester-email", "requester@applesonthetree.com" # look this up in our created user
 		end
 		response = RestClient.post "#{@@api_url}#{url}", xml
 	end
