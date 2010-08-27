@@ -9,7 +9,16 @@ class Zenleg
 	# RestClient.post 'url'
 	# RestClient.delete 'url'
 	
-	def initialize(email="requester@applesonthetree.com", name="Request User", roles=4, restriction_id=1, groups=[2,3])
+	def initialize(*args)
+		defaults = {
+			:email => "requester@applesonthetree.com",
+			:name => "Request User",
+			:roles => 4,
+			:restriction_id => 1,
+			:groups => [2,3]
+		}
+		params = defaults
+		params = defaults.merge(args.first) unless args.empty?
 		# Create the user
 		# POST /users.xml
 		url = "/users.xml"
@@ -34,7 +43,13 @@ class Zenleg
 		response
 	end
 
-	def create_ticket_as_requester(description="requester description", priority_id=1)
+	def create_ticket_as_requester(*args)
+		defaults = {
+			:description => "requester default description",
+			:priority_id => 1
+		}
+		params = defaults
+		params = defaults.merge(args.first) unless args.empty?
 		# POST /tickets.xml
 		url = "/tickets.xml"
 		xml = ""
@@ -49,7 +64,14 @@ class Zenleg
 		response = RestClient.post "#{@@api_url}#{url}", xml
 	end
 
-	def mark_ticket_resolved(assignee_id=1, additional_tags="", ticket_field_entries=[])
+	def mark_ticket_resolved(*args)
+		defaults = {
+			:assignee_id => 1,
+			:additional_tags => "",
+			:ticket_field_entries => []
+		}
+		params = defaults
+		params = defaults.merge(args.first) unless args.empty?
 		# PUT /tickets/#{id}.xml
 		url = "/tickets/1.xml"
 		xml = ""
