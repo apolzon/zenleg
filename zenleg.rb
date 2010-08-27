@@ -26,12 +26,12 @@ class Zenleg
 		builder = Builder::XmlMarkup.new(:target => xml)
 		builder.instruct!
 		builder.user do |u|
-			u.email email
-			u.name name
-			u.roles roles
-			u.tag! "restriction-id", restriction_id
+			u.email params[:email]
+			u.name params[:name]
+			u.roles params[:roles]
+			u.tag! "restriction-id", params[:restriction_id]
 			u.groups(:type => "array") do |g|
-				groups.each do |g_num|
+				params[:groups].each do |g_num|
 					g.group g_num
 				end
 			end
@@ -56,8 +56,8 @@ class Zenleg
 		builder = Builder::XmlMarkup.new(:target => xml)
 		builder.instruct!
 		builder.ticket do |t|
-			t.description description
-			t.tag! "priority-id", priority_id
+			t.description params[:description]
+			t.tag! "priority-id", params[:priority_id]
 			t.tag! "requester-name", "Request User" # look this up in our created user
 			t.tag! "requester-email", "requester@applesonthetree.com" # look this up in our created user
 		end
@@ -78,12 +78,14 @@ class Zenleg
 		builder = Builder::XmlMarkup.new(:target => xml)
 		builder.instruct!
 		builder.ticket do |t|
-			t.tag! "assignee-id", 1
-			t.tag! "additional-tags", "tagname"
+			t.tag! "assignee-id", params[:assignee_id]
+			t.tag! "additional-tags", params[:additional_tags]
 			t.tag! "ticket-field-entries", :type => "array" do |entry|
-				entry.tag! "ticket-field-entry" do |field|
-					field.tag! "ticket-field-id", 1
-					field.value "value"
+				params[:ticket_field_entries].each do |param|
+					entry.tag! "ticket-field-entry" do |field|
+						field.tag! "ticket-field-id", param[:ticket_field_id]
+						field.value param[:value]
+					end
 				end
 			end
 		end
