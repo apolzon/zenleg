@@ -49,7 +49,7 @@ class Zenleg
 		response = RestClient.post "#{@@api_url}#{url}", xml
 	end
 
-	def mark_ticket_resolved
+	def mark_ticket_resolved(assignee_id=1, additional_tags="", ticket_field_entries=[])
 		# PUT /tickets/#{id}.xml
 		url = "/tickets/1.xml"
 		xml = ""
