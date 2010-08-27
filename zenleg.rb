@@ -26,6 +26,19 @@ class Zenleg
 		  </groups>
 		</user>
 =end
+		xml = ""
+		builder = Builder::XmlMarkup.new(:target => xml)
+		builder.instruct!
+		builder.user do |u|
+			u.email "test@test.com"
+			u.name "test"
+			u.roles 4
+			u.tag! 'restriction-id' 1
+			u.groups(:type => "array") do |group|
+				group.group 2
+				group.group 3
+			end
+		end
 	end
 
 	def create_ticket_as_requestor
