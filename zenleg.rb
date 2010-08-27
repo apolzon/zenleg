@@ -3,7 +3,6 @@ require 'rest-client'
 require 'builder'
 class Zenleg
 	RestClient.log = $stdout
-	@@resource = RestClient::Resource.new("http://applesonthetree.zendesk.com", :user => "apolzon@gmail.com", :password => "test123")
 	# RestClient usage:
 	# RestClient.get 'url'
 	# RestClient.get 'url', {:params => {} }
@@ -11,11 +10,12 @@ class Zenleg
 	# RestClient.delete 'url'
 	
 	def initialize(*args)
+	@resource = RestClient::Resource.new("http://applesonthetree.zendesk.com", :user => "apolzon@gmail.com", :password => "test123")
 		defaults = {
 			:email => "requester@applesonthetree.com",
 			:name => "Request User",
-			:roles => 4,
-			:restriction_id => 1,
+			:roles => 0,
+			:restriction_id => 4,
 			:groups => [2,3]
 		}
 		params = defaults
@@ -28,14 +28,12 @@ class Zenleg
 			u.email params[:email]
 			u.name params[:name]
 			u.roles params[:roles]
+			u.password "testuser"
 			u.tag! "restriction-id", params[:restriction_id]
-			u.groups(:type => "array") do |g|
-				params[:groups].each do |g_num|
-					g.group g_num
-				end
-			end
+			u.tag! "is-verified", "true"
 		end
-		response = @@resource[url].post xml, :content_type => "application/xml"
+		response = @resource["/users.xml"].post xml, :content_type => "xml"
+#		response = @resource["/users.xml"].post "<user><email>t@t.com</email><name>Test Test</name></user>", :content_type => "xml"
 		if response.code == 507
 			return "Account cannot create more users"
 		end
