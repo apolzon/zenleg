@@ -3,6 +3,7 @@ require 'rest-client'
 require 'builder'
 class Zenleg
 	RestClient.log = $stdout
+	@@resource = RestClient::Resource.new("http://applesonthetree.zendesk.com", :user => "apolzon@gmail.com", :password => "test123")
 	# RestClient usage:
 	# RestClient.get 'url'
 	# RestClient.get 'url', {:params => {} }
@@ -10,7 +11,6 @@ class Zenleg
 	# RestClient.delete 'url'
 	
 	def initialize(*args)
-	@resource = RestClient::Resource.new("http://applesonthetree.zendesk.com", :user => "apolzon@gmail.com", :password => "test123")
 		defaults = {
 			:email => "requester@applesonthetree.com",
 			:name => "Request User",
@@ -32,7 +32,7 @@ class Zenleg
 			u.tag! "restriction-id", params[:restriction_id]
 			u.tag! "is-verified", "true"
 		end
-		response = @resource["/users.xml"].post xml, :content_type => "xml"
+		response = @@resource["/users.xml"].post xml, :content_type => "xml"
 #		response = @resource["/users.xml"].post "<user><email>t@t.com</email><name>Test Test</name></user>", :content_type => "xml"
 		if response.code == 507
 			return "Account cannot create more users"
@@ -58,7 +58,7 @@ class Zenleg
 			t.tag! "requester-name", "Request User" # look this up in our created user
 			t.tag! "requester-email", "requester@applesonthetree.com" # look this up in our created user
 		end
-		response = @@resource.post "#{url}", xml
+		response = @@resource.post "#{url}", xml, :content_type => "xml"
 	end
 
 	def mark_ticket_resolved(*args)
@@ -86,6 +86,6 @@ class Zenleg
 				end
 			end
 		end
-		response = @@resource.put "#{url}", xml
+		response = @@resource.put "#{url}", xml, :content_type => "xml"
 	end
 end
