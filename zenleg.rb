@@ -14,31 +14,24 @@ class Zenleg
 		# No privs gives 507 (catch this?)
 		# POST /users.xml
 		# Sample xml:
-=begin
-		<user>
- 		  <email>aljohson@yourcompany.dk</email>
-		  <name>Al Johnson</name>
-			<roles>4</roles>
-		  <restriction-id>1</restriction-id>
- 		  <groups type='array'>
-		    <group>2</group>
- 		    <group>3</group>
-		  </groups>
-		</user>
-=end
 		xml = ""
 		builder = Builder::XmlMarkup.new(:target => xml)
 		builder.instruct!
 		builder.user do |u|
-			u.email "test@test.com"
-			u.name "test"
+			u.email "requester@applesonthetree.com"
+			u.name "Request User"
 			u.roles 4
 			u.tag! 'restriction-id' 1
-			u.groups(:type => "array") do |group|
-				group.group 2
-				group.group 3
+			u.groups(:type => "array") do |g|
+				g.group 2
+				g.group 3
 			end
 		end
+		response = RestClient.post "http://applesonthetree.zendesk.com/users.xml" xml
+		if response.code == 507
+			return "Account cannot create more users"
+		end
+		response
 	end
 
 	def create_ticket_as_requestor
