@@ -58,7 +58,7 @@ class Zenleg
 			t.tag! "requester-name", "Request User" # look this up in our created user
 			t.tag! "requester-email", "requester@applesonthetree.com" # look this up in our created user
 		end
-		response = @@resource.post "#{url}", xml, :content_type => "xml"
+		response = @@resource["/tickets.xml"].post xml, :content_type => "xml"
 	end
 
 	def mark_ticket_resolved(*args)
@@ -86,6 +86,6 @@ class Zenleg
 				end
 			end
 		end
-		response = @@resource.put "#{url}", xml, :content_type => "xml"
+		response = @@resource["/tickets/1.xml"].put xml, :content_type => "xml"
 	end
 end
