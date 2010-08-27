@@ -58,7 +58,7 @@ class Zenleg
 			:assignee_id => 16117939,
 			:additional_tags => "",
 			:ticket_field_entries => [],
-			#:ticket_field_entries => [{:ticket_field_id => 312002, :value => "solved"}],
+			#:ticket_field_entries => [{:ticket_field_id => 312002, :value => 1}],
 			:id => 2
 		}
 		params = defaults
@@ -68,6 +68,7 @@ class Zenleg
 		builder = Builder::XmlMarkup.new(:target => xml)
 		builder.instruct!
 		builder.ticket do |t|
+			t.status_id 3  
 			t.tag! "assignee-id", params[:assignee_id]
 			t.tag! "additional-tags", params[:additional_tags]
 			unless params[:ticket_field_entries].empty?
