@@ -1,5 +1,6 @@
 require 'rubygems'
 require 'rest-client'
+require 'builder'
 class Zenleg
 	# RestClient usage:
 	# RestClient.get 'url'
