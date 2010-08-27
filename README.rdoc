@@ -2,3 +2,4 @@
 This class provides three useful methods -- an initializer, for creating a new user, a method for creating a ticket as that user, and another for marking the ticket as resolved.
 
 If you do not provide parameters, defaults will be used.  However, the class does not pre-verify it is not creating an already existing user; a 406 (Not Acceptable) error is a good sign this is what is going on.
+Additionally, although the mark as resolved method does not explicitly require an :id, failing to provide one will result in trying to delete the default ticket (#2), which probably doesn't exist.
