@@ -29,7 +29,7 @@ class Zenleg
 			u.email email
 			u.name name
 			u.roles roles
-			u.tag! "restriction-id" restriction_id
+			u.tag! "restriction-id", restriction_id
 			u.groups(:type => "array") do |g|
 				groups.each do |g_num|
 					g.group g_num
